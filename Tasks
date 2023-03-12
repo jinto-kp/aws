@@ -41,7 +41,10 @@ users:
     ssh-authorized-keys: 
     - PublicKeypair
 
-
+2. Create an ec2 instance with elastic ip attached to it and deploy a docker nginx container and try to access it from the browser. 
+2. Create an ec2 instance with elastic ip attached to it and deploy a docker nginx container and try to access it from the browser. 
+[ec2-user@ip-172-31-13-204 ~]$ docker pull nginx
+[ec2-user@ip-172-31-13-204 ~]$ docker run --name nginx -p 80:80 -d 555f0ffc1dc638cb3fac95b50ca88da5751ab0d0150b38a505fe1e8f66a7e3cb
 
 4. Create an iam role and attach iam read policy. Attach the role to an ec2 instance and try to list iam users from ec2 terminal
 
