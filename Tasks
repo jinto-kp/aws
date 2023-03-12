@@ -71,8 +71,12 @@ jinto@jinto-virtual-machine:~/Desktop$ aws iam list-users
     ]
 }
 
+TASKS - VPC
+1. Create a custom vpc with 2 public subnet and 2 private subnet. 
+Plesae see the Screenshot VPCTASK1
 
-
+2. Deploy httpd application in an EC2 instance with above created vpc in public subnet.
+Plesae see the Screenshot VPCTASK2
 
 
 
