@@ -1,0 +1,75 @@
+1. A user misses his private key to access EC2 instance. How can the user regain his access to ec2 instance. 
+
+jinto@jinto-virtual-machine:~/Desktop$ ssh-keygen -y -f /home/jinto/Downloads/New-keypair.pem
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6AWH2Z0a/ZudcDpa9hu2Y1Cq2NxB00pJxit8q69DKKwLVpXzbB2807kGvvlRFV7DKPEuvnda6FZIp/6pBhcPI74SqOOenpJVSm0NBBJndahhSMoCq0Hwak4GeXjGSwWzst2r0whghsOFD+pUyer6U1NyzT55QYS9t1GG3WD99zEJiDloS6NE+eLP7ou4i63aBGzSZd1jiC7N2maPC4jd753/UgqBU9lJWe24RCS36dYUEKc+q/Z8wDdZdyWOC73JRnKHk3yFXW+tSTkVhfNks6IgLjedbw3pl7MZNTBdobozTLvzccFBp/iU15SJoFEbV+cGWBynKr+JdXy1leXI3
+jinto@jinto-virtual-machine:~/Desktop$ chmod 400 /home/jinto/Downloads/New-keypair.pem
+jinto@jinto-virtual-machine:~/Desktop$ ssh ec2-user@34.200.246.39 -i /home/jinto/Downloads/New-keypair.pem
+The authenticity of host '34.200.246.39 (34.200.246.39)' can't be established.
+ED25519 key fingerprint is SHA256:TpLJc1NetGaaLcBV8qLYHY1jSLN4KrzuVrLwh9pcPnY.
+This host key is known by the following other names/addresses:
+    ~/.ssh/known_hosts:53: [hashed name]
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '34.200.246.39' (ED25519) to the list of known hosts.
+Last login: Sat Mar 11 12:04:54 2023 from 117.198.162.236
+
+       __|  __|_  )
+       _|  (     /   Amazon Linux 2 AMI
+      ___|\___|___|
+
+https://aws.amazon.com/amazon-linux-2/
+[ec2-user@ip-172-31-13-204 ~]$ cat .ssh/authorized_keys
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCaRNMxqzVur1WXw0NCbpmBcpR9AHZVRJN/b+2CpK6P/hp2qDGTqqWXWPUHOsmu0gJ+je6sU1kqy7qZEHAhPIvxAAJnKJTYc1LONI6Wj4Mdhgg7Gc1Bv7XvD6ecLGo+SXxBxVS5rPc83JDT9grIXURdQkl3wMyxbFENvtinEZ0VvqxlUnhMddaiGzWQrSRdH86E+9XZLbFRjHiuvANuAvilVJv3fHzS7w7NsC7NiPjFRFPn0M7rOpXrmrXBzHmiO81ee2kuq+lnZVZHLsGBcipXXhVUpSfJDdXh2tfKaPMkRDNj3PKOudxJSAo03xxArj/7haQbu/MsCw6aN1OCyKgZ awsec2key
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6AWH2Z0a/ZudcDpa9hu2Y1Cq2NxB00pJxit8q69DKKwLVpXzbB2807kGvvlRFV7DKPEuvnda6FZIp/6pBhcPI74SqOOenpJVSm0NBBJndahhSMoCq0Hwak4GeXjGSwWzst2r0whghsOFD+pUyer6U1NyzT55QYS9t1GG3WD99zEJiDloS6NE+eLP7ou4i63aBGzSZd1jiC7N2maPC4jd753/UgqBU9lJWe24RCS36dYUEKc+q/Z8wDdZdyWOC73JRnKHk3yFXW+tSTkVhfNks6IgLjedbw3pl7MZNTBdobozTLvzccFBp/iU15SJoFEbV+cGWBynKr+JdXy1leXI3
+[ec2-user@ip-172-31-13-204 ~]$ 
+
+ Copy the following script into the Edit user data dialog box:
+
+Content-Type: multipart/mixed; boundary="//"
+MIME-Version: 1.0
+
+--//
+Content-Type: text/cloud-config; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="cloud-config.txt"
+
+#cloud-config
+cloud_final_modules:
+- [users-groups, once]
+users:
+  - name: username
+    ssh-authorized-keys: 
+    - PublicKeypair
+
+
+
+4. Create an iam role and attach iam read policy. Attach the role to an ec2 instance and try to list iam users from ec2 terminal
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+./aws/install -i /usr/local/aws-cli -b /usr/local/bin
+aws --version
+jinto@jinto-virtual-machine:~/Desktop$ aws --version
+aws-cli/2.11.2 Python/3.11.2 Linux/5.19.0-35-generic exe/x86_64.ubuntu.22 prompt/off
+jinto@jinto-virtual-machine:~/Desktop$ aws configure
+AWS Access Key ID [None]: AKIAQLFJ73WDO7S7XN5J
+AWS Secret Access Key [None]: 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
+Default region name [None]: 
+Default output format [None]: 
+jinto@jinto-virtual-machine:~/Desktop$ aws iam list-users
+{
+    "Users": [
+        {
+            "Path": "/",
+            "UserName": "jinto_IAM",
+     
+            "CreateDate": "2023-03-12T05:48:34+00:00"
+        }
+    ]
+}
+
+
+
+
+
+
